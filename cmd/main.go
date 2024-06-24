@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/api"
@@ -8,5 +9,9 @@ import (
 
 func main() {
 	apiRouter := api.NewRouter()
-	http.ListenAndServe(":8080", apiRouter)
+
+	err := http.ListenAndServe(":8080", apiRouter)
+	if err != nil {
+		fmt.Println(err)
+	}
 }

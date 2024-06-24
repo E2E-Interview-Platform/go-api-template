@@ -12,3 +12,9 @@ func userDetails() func(http.ResponseWriter, *http.Request) {
 		return
 	}
 }
+
+func userPanic() func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		panic("Trying Panic")
+	}
+}
