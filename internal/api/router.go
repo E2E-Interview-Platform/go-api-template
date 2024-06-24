@@ -12,6 +12,7 @@ func NewRouter() *chi.Mux {
 
 	// Middleware
 	apiRouter.Use(middleware.RequestId)
+	apiRouter.Use(middleware.RequestLogger)
 	apiRouter.Use(middleware.Recoverer)
 
 	// Routes
