@@ -2,16 +2,18 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/api"
+	customcontext "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/context"
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/environment"
 )
 
 func main() {
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, "rid", "main-function")
+	ctx = customcontext.SetRequestID(ctx, "main-function")
 
 	err := environment.LoadEnvironment()
 	if err != nil {
@@ -21,7 +23,10 @@ func main() {
 
 	apiRouter := api.NewRouter()
 
-	err = http.ListenAndServe(":8080", apiRouter)
+	serverAddr := fmt.Sprintf(":%d", environment.PORT)
+	ctxlogger.Info(ctx, "Starting server at %s", serverAddr)
+
+	err = http.ListenAndServe(serverAddr, apiRouter)
 	if err != nil {
 		ctxlogger.Error(ctx, err.Error())
 	}

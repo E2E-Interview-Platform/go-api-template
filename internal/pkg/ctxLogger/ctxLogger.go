@@ -11,7 +11,6 @@ import (
 
 func init() {
 	log.SetOutput(os.Stdout)
-	log.SetReportCaller(true)
 
 	if environment.ENVIRONMENT == "production" {
 		log.SetFormatter(&log.JSONFormatter{})
