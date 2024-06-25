@@ -8,6 +8,7 @@ import (
 )
 
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
-	middleware.ErrorResponse(w, http.StatusNotFound, customerrors.NotFoundError{Message: "API not Found"})
+	ctx := r.Context()
+	middleware.ErrorResponse(ctx, w, http.StatusNotFound, customerrors.NotFoundError{Message: "API not Found"})
 	return
 }

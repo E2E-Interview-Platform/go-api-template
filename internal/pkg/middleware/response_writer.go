@@ -1,9 +1,12 @@
 package middleware
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 )
 
 type response struct {
@@ -12,7 +15,7 @@ type response struct {
 	Data         interface{} `json:"data"`
 }
 
-func SuccessResponse(w http.ResponseWriter, status int, data any) {
+func SuccessResponse(ctx context.Context, w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 
@@ -22,22 +25,22 @@ func SuccessResponse(w http.ResponseWriter, status int, data any) {
 
 	out, err := json.Marshal(payload)
 	if err != nil {
-		fmt.Println("cannot marshal success response payload")
-		writeServerErrorResponse(w)
+		ctxlogger.Error(ctx, "cannot marshal success response payload")
+		writeServerErrorResponse(ctx, w)
 		return
 	}
 
 	_, err = w.Write(out)
 	if err != nil {
-		fmt.Println("cannot write json success response")
-		writeServerErrorResponse(w)
+		ctxlogger.Error(ctx, "cannot write json success response")
+		writeServerErrorResponse(ctx, w)
 		return
 	}
 }
 
-func ErrorResponse(w http.ResponseWriter, httpStatus int, err error) {
+func ErrorResponse(ctx context.Context, w http.ResponseWriter, httpStatus int, err error) {
 	// Printing the error
-	fmt.Println(err)
+	ctxlogger.Error(ctx, err.Error())
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)
@@ -49,23 +52,23 @@ func ErrorResponse(w http.ResponseWriter, httpStatus int, err error) {
 
 	out, err := json.Marshal(payload)
 	if err != nil {
-		fmt.Println("error occurred while marshaling response payload")
-		writeServerErrorResponse(w)
+		ctxlogger.Error(ctx, "error occurred while marshaling response payload")
+		writeServerErrorResponse(ctx, w)
 		return
 	}
 
 	_, err = w.Write(out)
 	if err != nil {
-		fmt.Println("error occurred while writing response")
-		writeServerErrorResponse(w)
+		ctxlogger.Error(ctx, "error occurred while writing response")
+		writeServerErrorResponse(ctx, w)
 		return
 	}
 }
 
-func writeServerErrorResponse(w http.ResponseWriter) {
+func writeServerErrorResponse(ctx context.Context, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusInternalServerError)
 	_, err := w.Write([]byte(fmt.Sprintf("{\"message\":%s}", "internal server error")))
 	if err != nil {
-		fmt.Println("error occurred while writing response")
+		ctxlogger.Error(ctx, "error occurred while writing response")
 	}
 }

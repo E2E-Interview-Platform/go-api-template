@@ -1,16 +1,17 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
+	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/middleware"
 )
 
 func userDetails() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("User Details Function")
-		middleware.SuccessResponse(w, http.StatusOK, struct{ Name string }{Name: "suhaan"})
+		ctx := r.Context()
+		ctxlogger.Info(ctx, "User Details Function")
+		middleware.SuccessResponse(ctx, w, http.StatusOK, struct{ Name string }{Name: "suhaan"})
 		return
 	}
 }
