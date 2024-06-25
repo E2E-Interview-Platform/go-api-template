@@ -12,7 +12,7 @@ import (
 func init() {
 	log.SetOutput(os.Stdout)
 
-	if environment.ENVIRONMENT == "production" {
+	if os.Getenv(environment.LOG_FORMAT) == "json" {
 		log.SetFormatter(&log.JSONFormatter{})
 	} else {
 		log.SetFormatter(&log.TextFormatter{})
