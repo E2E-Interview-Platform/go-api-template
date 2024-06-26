@@ -1,0 +1,7 @@
+/api/v1/users:
+  get:
+    $ref: ./api/users/v1/users_get.yaml
+
+/api/v1/users/panic:
+  get:
+    $ref: ./api/users/v1/users_panic.yaml

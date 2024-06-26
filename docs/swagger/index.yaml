@@ -1,0 +1,19 @@
+openapi: 3.0.3
+info:
+  title: Project Name APIs
+  description: Description about the Project
+  version: "1.0"
+servers:
+  - url: http://localhost:8000
+    description: Local Server
+tags:
+  - name: USER
+    description: User Facing APIs
+paths:
+  $ref: ./paths/index.yaml
+components:
+  securitySchemes:
+    bearerAuthToken:            
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 

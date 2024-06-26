@@ -1,0 +1,26 @@
+tags:
+  - USER
+summary: 'Get all users'
+description: 'List all users of the application.'
+responses:
+  '200':
+    description: OK
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error_code:
+              type: integer
+              example: 0
+            error_message:
+              type: string
+              example: ''
+            data:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "user name"
+  '500':
+    description: Internal Server Error

@@ -1,2 +1,9 @@
+# Environment
 .env
+
+# Logs
 logs
+
+# Swagger and Postman Files
+docs/swagger/generated-swagger.yaml
+docs/swagger/generated-postman.json
