@@ -6,9 +6,11 @@ import (
 	"net/http"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/api"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/job"
 	customcontext "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/context"
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/environment"
+	"github.com/go-co-op/gocron/v2"
 )
 
 func main() {
@@ -22,6 +24,16 @@ func main() {
 		ctxlogger.Error(ctx, err.Error())
 		return
 	}
+
+	// Initializing Cron Job
+	scheduler, err := gocron.NewScheduler()
+	if err != nil {
+		ctxlogger.Error(ctx, "Scheduler creation failed with error: %s", err.Error())
+		return
+	}
+
+	job.InitializeJobs(scheduler)
+	defer scheduler.Shutdown()
 
 	// Setting chi router and serving it
 	apiRouter := api.NewRouter()
