@@ -12,15 +12,18 @@ import (
 )
 
 func main() {
+	// Context for main function
 	ctx := context.Background()
 	ctx = customcontext.SetRequestID(ctx, "main-function")
 
+	// Loading environment variables
 	err := environment.LoadEnvironment()
 	if err != nil {
 		ctxlogger.Error(ctx, err.Error())
 		return
 	}
 
+	// Setting chi router and serving it
 	apiRouter := api.NewRouter()
 
 	serverAddr := fmt.Sprintf(":%d", environment.PORT)
