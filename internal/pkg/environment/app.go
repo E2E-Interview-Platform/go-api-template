@@ -36,12 +36,12 @@ func SetupAppEnvironment() error {
 func getPORT() (int, error) {
 	strPort := os.Getenv("PORT")
 	if strPort == "" {
-		return -1, customerrors.CustomError{Message: "Environment variable `PORT` not found"}
+		return -1, customerrors.CustomError{Message: "environment variable `PORT` not found"}
 	}
 
 	port, err := strconv.Atoi(strPort)
 	if err != nil {
-		return -1, fmt.Errorf("Error %w when parsing Environment variable `PORT`", err)
+		return -1, fmt.Errorf("error %w when parsing Environment variable `PORT`", err)
 	}
 
 	return port, nil

@@ -26,6 +26,7 @@ func init() {
 	if os.Getenv(environment.LOG_FORMAT_KEY) == "json" {
 		log.SetFormatter(&log.JSONFormatter{})
 	} else {
+		log.SetLevel(log.DebugLevel)
 		log.SetFormatter(&log.TextFormatter{})
 	}
 }

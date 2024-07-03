@@ -13,6 +13,26 @@ test-cover: ## Run all unit tests in the project with test coverage
 html-cover: test-cover
 	go tool cover -html="coverage.out"
 
+
+## Migration
+migration-run: build
+	./main --migration="run"
+
+migration-up: build
+	./main --migration="up"
+
+migration-down: build
+	./main --migration="down"
+
+migration-force: build
+	@read -p "Enter force version: " forceVersion && \
+	./main --migration="force" --migration-force-version="$$forceVersion" 
+
+migration-create-file: build
+	@read -p "Enter migration filename: " filename && \
+	./main --migration="create" --migration-filename="$$filename" 
+
+
 ## Documentation
 SWAGGER_PARENT_INDEX_YAML_PATH := docs/swagger/index.yaml
 SWAGGER_YAML_PATH              := docs/swagger/generated-swagger.yaml

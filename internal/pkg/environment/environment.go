@@ -18,5 +18,10 @@ func LoadEnvironment() error {
 		return err
 	}
 
+	err = SetupDatabaseEnvironment()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
