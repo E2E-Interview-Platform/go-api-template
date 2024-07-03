@@ -25,6 +25,22 @@ func (err BadRequestError) Error() string {
 	return err.Message
 }
 
+type DuplicateKeyError struct {
+	Message string
+}
+
+func (err DuplicateKeyError) Error() string {
+	return err.Message
+}
+
+type InvalidCredentialError struct {
+	Message string
+}
+
+func (err InvalidCredentialError) Error() string {
+	return err.Message
+}
+
 type NotFoundError struct {
 	Message string
 }

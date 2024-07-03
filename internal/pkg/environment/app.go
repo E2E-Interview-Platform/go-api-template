@@ -16,6 +16,10 @@ var (
 	// required: true value: port number
 	// Represents the port on which the application is served
 	PORT int
+
+	// required: true value: string
+	// Used as a secret key for JWT token
+	JWT_SECRET_KEY string
 )
 
 func SetupAppEnvironment() error {
@@ -28,6 +32,12 @@ func SetupAppEnvironment() error {
 	PORT, err = getPORT()
 	if err != nil {
 		return err
+	}
+
+	// JWT_SECRET_KEY
+	JWT_SECRET_KEY = os.Getenv("JWT_SECRET_KEY")
+	if JWT_SECRET_KEY == "" {
+		return customerrors.CustomError{Message: "environment variable `JWT_SECRET_KEY` not found"}
 	}
 
 	return nil

@@ -1,13 +1,19 @@
 package customerrors
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func MapError(err error) (int, error) {
 	switch typedError := err.(type) {
-	case NotFoundError:
-		return http.StatusNotFound, err
 	case BadRequestError:
 		return http.StatusBadRequest, err
+	case DuplicateKeyError:
+		return http.StatusBadRequest, err
+	case InvalidCredentialError:
+		return http.StatusUnauthorized, err
+	case NotFoundError:
+		return http.StatusNotFound, err
 	case CustomError:
 		return typedError.Code, err
 	default:

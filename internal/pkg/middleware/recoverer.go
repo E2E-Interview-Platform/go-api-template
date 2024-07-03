@@ -36,7 +36,7 @@ func Recoverer(next http.Handler) http.Handler {
 
 				ctxlogger.Info(ctx, "panic: %v, stack: %s", rvr, string(debug.Stack()))
 
-				ErrorResponse(ctx, w, http.StatusInternalServerError, errors.New("Internal Server Error"))
+				ErrorResponse(ctx, w, ErrorResponseOptions{Error: errors.New("Internal Server Error")})
 			}
 		}()
 

@@ -3,11 +3,12 @@ package api
 import (
 	"net/http"
 
+	"github.com/Suhaan-Bhandary/go-api-template/internal/app"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
-func NewRouter() *chi.Mux {
+func NewRouter(services app.Dependencies) *chi.Mux {
 	apiRouter := chi.NewRouter()
 
 	// Middleware
@@ -16,17 +17,18 @@ func NewRouter() *chi.Mux {
 	apiRouter.Use(middleware.Recoverer)
 
 	// Routes
-	apiRouter.Mount("/api/v1/users", userRouter())
-	apiRouter.NotFound(notFoundHandler)
+	apiRouter.Mount("/api/v1/users", userRouter(services))
+	apiRouter.NotFound(NotFoundHandler)
 
 	return apiRouter
 }
 
 // Router for user
-func userRouter() http.Handler {
+func userRouter(services app.Dependencies) http.Handler {
 	r := chi.NewRouter()
-	r.Get("/", userDetails())
-	r.Get("/panic", userPanic())
+	r.Get("/", UserDetails())
+	r.Post("/", CreateUser(services.UserService))
+	r.Get("/panic", UserPanic())
 
 	return r
 }

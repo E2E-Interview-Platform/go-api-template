@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/api"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/app"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/db"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/job"
 	customcontext "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/context"
@@ -53,6 +54,9 @@ func main() {
 	}
 	defer db.Close()
 
+	// Services for application
+	services := app.NewServices(db.GetDB())
+
 	// Initializing Cron Job
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
@@ -64,7 +68,7 @@ func main() {
 	defer scheduler.Shutdown()
 
 	// Setting chi router and serving it
-	apiRouter := api.NewRouter()
+	apiRouter := api.NewRouter(services)
 
 	serverAddr := fmt.Sprintf(":%d", environment.PORT)
 	ctxlogger.Info(ctx, "Starting server at %s", serverAddr)
