@@ -16,6 +16,7 @@ type service struct {
 
 type Service interface {
 	CreateUser(ctx context.Context, userDetail dto.CreateUserRequest) (string, error)
+	ListUsers(ctx context.Context, filters dto.ListUsersRequest) ([]dto.User, error)
 }
 
 func NewService(userRepo repository.UserStorer) Service {
@@ -71,4 +72,16 @@ func (userSvc *service) CreateUser(ctx context.Context, userDetail dto.CreateUse
 	}
 
 	return token, nil
+}
+
+func (userSvc *service) ListUsers(ctx context.Context, filters dto.ListUsersRequest) ([]dto.User, error) {
+	ctxlogger.Info(ctx, "List Users Service")
+
+	users, err := userSvc.userRepo.ListUsers(ctx, nil, filters)
+	if err != nil {
+		ctxlogger.Error(ctx, "error listing users, err: %s", err.Error())
+		return []dto.User{}, nil
+	}
+
+	return users, nil
 }

@@ -9,11 +9,32 @@ import (
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/middleware"
 )
 
-func UserDetails() func(http.ResponseWriter, *http.Request) {
+func ListUsers(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctxlogger.Info(ctx, "User Details Function")
-		middleware.SuccessResponse(ctx, w, http.StatusOK, struct{ Name string }{Name: "suhaan"})
+		ctxlogger.Info(ctx, "List Users Handler")
+
+		req, err := decodeListUsersRequest(ctx, r)
+		if err != nil {
+			middleware.ErrorResponse(ctx, w, middleware.ErrorResponseOptions{Error: err})
+			return
+		}
+
+		err = req.Validate(ctx)
+		if err != nil {
+			middleware.ErrorResponse(ctx, w, middleware.ErrorResponseOptions{Error: err})
+			return
+		}
+
+		users, err := userSvc.ListUsers(ctx, req)
+		if err != nil {
+			middleware.ErrorResponse(ctx, w, middleware.ErrorResponseOptions{Error: err})
+			return
+		}
+
+		middleware.SuccessResponse(ctx, w, http.StatusOK, dto.ListUsersResponse{
+			Users: users,
+		})
 	}
 }
 

@@ -9,6 +9,41 @@ import (
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 )
 
+type User struct {
+	ID        string `json:"id" db:"id"`
+	Email     string `json:"email" db:"email"`
+	CreatedAt int64  `json:"created_at" db:"created_at"`
+	UpdatedAt int64  `json:"updated_at" db:"updated_at"`
+}
+
+// List User
+type ListUsersRequest struct {
+	Page        int    `json:"page"`
+	Limit       int    `json:"limit"`
+	SearchValue string `json:"search"`
+}
+
+func (req *ListUsersRequest) Validate(ctx context.Context) error {
+	if req.Page <= 0 {
+		err := customerrors.BadRequestError{Message: "page value should be greater than 0"}
+		ctxlogger.Error(ctx, "list user validate err: %s", err.Error())
+		return err
+	}
+
+	if req.Limit <= 0 || req.Limit > 1000 {
+		err := customerrors.BadRequestError{Message: "limit should be between 1 and 1000"}
+		ctxlogger.Error(ctx, "list user validate err: %s", err.Error())
+		return err
+	}
+
+	return nil
+}
+
+type ListUsersResponse struct {
+	Users []User `json:"users"`
+}
+
+// Create User
 type CreateUserRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

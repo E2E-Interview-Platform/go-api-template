@@ -26,7 +26,7 @@ func NewRouter(services app.Dependencies) *chi.Mux {
 // Router for user
 func userRouter(services app.Dependencies) http.Handler {
 	r := chi.NewRouter()
-	r.Get("/", UserDetails())
+	r.Get("/", ListUsers(services.UserService))
 	r.Post("/", CreateUser(services.UserService))
 	r.Get("/panic", UserPanic())
 

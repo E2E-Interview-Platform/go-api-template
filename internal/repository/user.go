@@ -2,12 +2,15 @@ package repository
 
 import (
 	"context"
+
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/dto"
 )
 
 type UserStorer interface {
 	RepositoryTransaction
 
 	CreateUser(ctx context.Context, tx Transaction, user User) error
+	ListUsers(ctx context.Context, tx Transaction, filters dto.ListUsersRequest) ([]dto.User, error)
 }
 
 type User struct {
