@@ -13,24 +13,32 @@ import (
 )
 
 type userStore struct {
-	db *sqlx.DB
+	BaseRepository
 }
 
 func NewUserRepo(db *sqlx.DB) repository.UserStorer {
 	return &userStore{
-		db: db,
+		BaseRepository: BaseRepository{DB: db},
 	}
 }
 
-func (userStore *userStore) CreateUser(ctx context.Context, user repository.User) error {
+func (userStore *userStore) CreateUser(ctx context.Context, tx repository.Transaction, user repository.User) error {
+	queryExecutor := userStore.initiateQueryExecutor(tx)
+
 	query := `
 		INSERT INTO users (id, email, password, created_at, updated_at) 
 		VALUES (:id, :email, :password, :created_at, :updated_at)
 	`
 
-	_, err := userStore.db.NamedExec(query, user)
+	query, values, err := queryExecutor.BindNamed(query, user)
 	if err != nil {
-		if err.(*mysql.MySQLError).Number == constants.MYSQL_KEY_EXITS {
+		return fmt.Errorf("failed to insert user: %w", err)
+	}
+
+	_, err = queryExecutor.Exec(query, values...)
+	if err != nil {
+		sqlErr, ok := err.(*mysql.MySQLError)
+		if ok && sqlErr.Number == constants.MYSQL_KEY_EXITS {
 			return customerrors.DuplicateKeyError{Message: "email already exits"}
 		}
 

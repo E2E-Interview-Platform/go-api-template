@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
@@ -39,7 +38,6 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 	})
 
 	if err != nil || !token.Valid {
-		fmt.Println(err, token.Valid)
 		return nil, customerrors.InvalidCredentialError{Message: "invalid JWT token"}
 	}
 

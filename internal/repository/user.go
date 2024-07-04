@@ -5,7 +5,9 @@ import (
 )
 
 type UserStorer interface {
-	CreateUser(ctx context.Context, user User) error
+	RepositoryTransaction
+
+	CreateUser(ctx context.Context, tx Transaction, user User) error
 }
 
 type User struct {
