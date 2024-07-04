@@ -18,11 +18,12 @@ func (userSvc *service) CreateUserRequestToUserMapper(ctx context.Context, userD
 		return repository.User{}, customerrors.InternalServerError{Message: "internal server error"}
 	}
 
+	currentUnixMilliSeconds := time.Now().UnixMilli()
 	return repository.User{
 		ID:        userSvc.idGenerator.GenerateId(),
 		Email:     userDetail.Email,
 		Password:  hashedPassword,
-		CreatedAt: time.Now().UnixNano(),
-		UpdatedAt: time.Now().UnixNano(),
+		CreatedAt: currentUnixMilliSeconds,
+		UpdatedAt: currentUnixMilliSeconds,
 	}, nil
 }
