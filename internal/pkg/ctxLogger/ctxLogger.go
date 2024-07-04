@@ -8,6 +8,7 @@ import (
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
 	customcontext "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/context"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/environment"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/helpers"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -27,26 +28,30 @@ func init() {
 		log.SetFormatter(&log.JSONFormatter{})
 	} else {
 		log.SetLevel(log.DebugLevel)
-		log.SetFormatter(&log.TextFormatter{})
+		log.SetFormatter(&CustomFormatter{})
 	}
 }
 
 func Info(ctx context.Context, message string, args ...interface{}) {
 	rid := customcontext.GetRequestID(ctx)
-	log.WithField("rid", rid).Infof(message, args...)
+	funcPath := helpers.GetCallerInfo()
+	log.WithFields(log.Fields{"rid": rid, "path": funcPath}).Infof(message, args...)
 }
 
 func Warn(ctx context.Context, message string, args ...interface{}) {
 	rid := customcontext.GetRequestID(ctx)
-	log.WithField("rid", rid).Warnf(message, args...)
+	funcPath := helpers.GetCallerInfo()
+	log.WithFields(log.Fields{"rid": rid, "path": funcPath}).Warnf(message, args...)
 }
 
 func Error(ctx context.Context, message string, args ...interface{}) {
 	rid := customcontext.GetRequestID(ctx)
-	log.WithField("rid", rid).Errorf(message, args...)
+	funcPath := helpers.GetCallerInfo()
+	log.WithFields(log.Fields{"rid": rid, "path": funcPath}).Errorf(message, args...)
 }
 
 func Debug(ctx context.Context, message string, args ...interface{}) {
 	rid := customcontext.GetRequestID(ctx)
-	log.WithField("rid", rid).Debugf(message, args...)
+	funcPath := helpers.GetCallerInfo()
+	log.WithFields(log.Fields{"rid": rid, "path": funcPath}).Debugf(message, args...)
 }
