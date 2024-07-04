@@ -1,4 +1,4 @@
-package constant
+package constants
 
 const (
 	// Code for duplicate key error in mysql

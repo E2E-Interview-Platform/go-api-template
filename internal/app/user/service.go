@@ -5,13 +5,13 @@ import (
 
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/dto"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/helpers"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/repository"
-	"github.com/Suhaan-Bhandary/go-api-template/internal/utils"
 )
 
 type service struct {
 	userRepo    repository.UserStorer
-	idGenerator utils.IDGenerator
+	idGenerator helpers.IDGenerator
 }
 
 type Service interface {
@@ -21,7 +21,7 @@ type Service interface {
 func NewService(userRepo repository.UserStorer) Service {
 	return &service{
 		userRepo:    userRepo,
-		idGenerator: utils.UUIDGenerator{},
+		idGenerator: helpers.UUIDGenerator{},
 	}
 }
 
@@ -40,7 +40,7 @@ func (userSvc *service) CreateUser(ctx context.Context, userDetail dto.CreateUse
 		return "", err
 	}
 
-	token, err := utils.GenerateToken(utils.TokenDetails{
+	token, err := helpers.GenerateToken(helpers.TokenDetails{
 		ID: user.ID,
 	})
 	if err != nil {

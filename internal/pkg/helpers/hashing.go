@@ -1,4 +1,4 @@
-package utils
+package helpers
 
 import (
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"

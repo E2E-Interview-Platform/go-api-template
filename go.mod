@@ -3,7 +3,6 @@ module github.com/Suhaan-Bhandary/go-api-template
 go 1.22.4
 
 require (
-	github.com/Suhaan-Bhandary/fundraiser-management v0.0.0-20240429140645-e3fa90edf596
 	github.com/go-chi/chi/v5 v5.0.14
 	github.com/go-co-op/gocron/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.8.1

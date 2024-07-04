@@ -1,4 +1,4 @@
-package constant
+package constants
 
 const (
 	// 30 Days expiration time for JWT

@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constant"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/repository"
 	"github.com/jmoiron/sqlx"
 
 	"github.com/go-sql-driver/mysql"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 type userStore struct {
@@ -31,7 +30,7 @@ func (userStore *userStore) CreateUser(ctx context.Context, user repository.User
 
 	_, err := userStore.db.NamedExec(query, user)
 	if err != nil {
-		if err.(*mysql.MySQLError).Number == constant.MYSQL_KEY_EXITS {
+		if err.(*mysql.MySQLError).Number == constants.MYSQL_KEY_EXITS {
 			return customerrors.DuplicateKeyError{Message: "email already exits"}
 		}
 

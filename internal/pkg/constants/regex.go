@@ -1,4 +1,4 @@
-package constant
+package constants
 
 const (
 	// Email regex to validate emails

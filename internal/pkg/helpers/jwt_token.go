@@ -1,10 +1,10 @@
-package utils
+package helpers
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constant"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/environment"
 	"github.com/golang-jwt/jwt/v5"
@@ -15,7 +15,7 @@ type TokenDetails struct {
 }
 
 func GenerateToken(tokenDetails TokenDetails) (string, error) {
-	expirationTime := time.Now().Add(time.Hour * constant.JWT_EXPIRATION_TIME_HOURS)
+	expirationTime := time.Now().Add(time.Hour * constants.JWT_EXPIRATION_TIME_HOURS)
 
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,

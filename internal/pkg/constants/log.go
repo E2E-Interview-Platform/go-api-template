@@ -1,4 +1,4 @@
-package constant
+package constants
 
 const (
 	// Max log file size in MB

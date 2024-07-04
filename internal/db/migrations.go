@@ -11,7 +11,7 @@ import (
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/environment"
-	"github.com/Suhaan-Bhandary/go-api-template/internal/utils"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/helpers"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/pkg/errors"
 
@@ -90,11 +90,11 @@ func (migration Migration) RunMigrations(ctx context.Context) {
 	}
 
 	if dbVersion > uint(localVersion) {
-		log.Fatal(fmt.Sprintf("Your database migration %d is ahead of local migration %d, you might need to rollback few migrations", dbVersion, localVersion))
+		log.Fatalf("Your database migration %d is ahead of local migration %d, you might need to rollback few migrations", dbVersion, localVersion)
 	}
 
 	if dbVersion < uint(localVersion) && dirty {
-		log.Fatal(fmt.Sprintf("Your currently active database migration %d is dirty, you might need to rollback it and then deploy again.", dbVersion))
+		log.Fatalf("Your currently active database migration %d is dirty, you might need to rollback it and then deploy again.", dbVersion)
 	}
 
 	err = migration.m.Up()
@@ -108,7 +108,7 @@ func (migration Migration) RunMigrations(ctx context.Context) {
 			log.Fatal(err2)
 		}
 
-		log.Fatal(fmt.Sprintf("Migration failed with error %s, current active database migration is %d", err, dbVersion))
+		log.Fatalf("Migration failed with error %s, current active database migration is %d", err, dbVersion)
 	}
 }
 
@@ -241,7 +241,7 @@ func (migration Migration) GoTo(ctx context.Context, version uint) error {
 	// and force the database to that version
 	if dirty {
 		//get the index of version that we get from the database
-		index, err := utils.GetIndexOfElementInSlice(localDIRFileVersions, int(dbversion))
+		index, err := helpers.GetIndexOfElementInSlice(localDIRFileVersions, int(dbversion))
 		if err != nil {
 			return errors.New("database version corresponding file not found in local file system")
 		}

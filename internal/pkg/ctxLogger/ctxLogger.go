@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constant"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
 	customcontext "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/context"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/environment"
 	log "github.com/sirupsen/logrus"
@@ -17,8 +17,8 @@ func init() {
 	if logDir := os.Getenv(environment.LOG_DIR_KEY); logDir != "" {
 		log.SetOutput(&lumberjack.Logger{
 			Filename:   fmt.Sprintf("%s/app.log", logDir),
-			MaxSize:    constant.MAX_LOG_SIZE_MB,
-			MaxBackups: constant.MAX_LOG_BACKUPS,
+			MaxSize:    constants.MAX_LOG_SIZE_MB,
+			MaxBackups: constants.MAX_LOG_BACKUPS,
 			Compress:   true,
 		})
 	}

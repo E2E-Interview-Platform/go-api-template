@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Suhaan-Bhandary/go-api-template/internal/utils"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/helpers"
 )
 
 func createFile(filename string) (err error) {
@@ -43,7 +43,7 @@ func getMigrationVersionsFromDir(directoryName string) ([]int, error) {
 		}
 	}
 
-	utils.SortIntDescending(fileVersions)
+	helpers.SortIntDescending(fileVersions)
 
 	return fileVersions, nil
 }

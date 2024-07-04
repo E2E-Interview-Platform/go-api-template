@@ -4,7 +4,7 @@ import (
 	"context"
 	"regexp"
 
-	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constant"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 )
@@ -22,7 +22,7 @@ func (req *CreateUserRequest) Validate(ctx context.Context) error {
 	}
 
 	// check if email is in correct format
-	match, err := regexp.MatchString(constant.EMAIL_REGEX, req.Email)
+	match, err := regexp.MatchString(constants.EMAIL_REGEX, req.Email)
 	if err != nil || !match {
 		err := customerrors.BadRequestError{Message: "invalid email"}
 		ctxlogger.Error(ctx, "create user validate err: %s", err.Error())
