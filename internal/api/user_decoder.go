@@ -23,7 +23,6 @@ func decodeRegisterUserRequest(ctx context.Context, r *http.Request) (dto.Create
 
 	// Removing white spaces
 	req.Email = strings.TrimSpace(req.Email)
-	req.Password = strings.TrimSpace(req.Password)
 
 	return req, nil
 }

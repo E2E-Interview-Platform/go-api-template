@@ -2,7 +2,9 @@ package context
 
 import "context"
 
-const RequestIdKey string = "request-id"
+type RequestIDString string
+
+const RequestIdKey RequestIDString = "request-id"
 
 func GetRequestID(ctx context.Context) string {
 	rid, ok := ctx.Value(RequestIdKey).(string)
