@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
@@ -71,7 +72,11 @@ func (userStore *userStore) CreateUser(ctx context.Context, tx repository.Transa
 	if err != nil {
 		sqlErr, ok := err.(*mysql.MySQLError)
 		if ok && sqlErr.Number == constants.MYSQL_KEY_EXITS {
-			return customerrors.DuplicateKeyError{Message: "email already exits"}
+			return customerrors.Error{
+				Code:          http.StatusBadRequest,
+				CustomMessage: "User with the email already exits",
+				InternalError: fmt.Errorf("create user email error, err: %s", err),
+			}
 		}
 
 		return fmt.Errorf("failed to insert user: %w", err)

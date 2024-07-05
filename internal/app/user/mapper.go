@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
@@ -15,7 +16,11 @@ func (userSvc *service) CreateUserRequestToUserMapper(ctx context.Context, userD
 	hashedPassword, err := helpers.Hash(userDetail.Password)
 	if err != nil {
 		ctxlogger.Error(ctx, "error hashing password in #CreateUserRequestToUserMapper")
-		return repository.User{}, customerrors.InternalServerError{Message: "internal server error"}
+		return repository.User{}, customerrors.Error{
+			Code:          http.StatusInternalServerError,
+			CustomMessage: "Something went wrong",
+			InternalError: err,
+		}
 	}
 
 	currentUnixMilliSeconds := time.Now().UnixMilli()

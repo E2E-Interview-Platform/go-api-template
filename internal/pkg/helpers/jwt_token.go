@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
@@ -38,7 +40,11 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 	})
 
 	if err != nil || !token.Valid {
-		return nil, customerrors.InvalidCredentialError{Message: "invalid JWT token"}
+		return nil, customerrors.Error{
+			Code:          http.StatusUnauthorized,
+			CustomMessage: "JWT token is invalid",
+			InternalError: fmt.Errorf("JWT verification error, err: %s", err),
+		}
 	}
 
 	return token, nil

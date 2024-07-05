@@ -11,15 +11,17 @@ import (
 )
 
 type response struct {
-	ErrorCode    int         `json:"error_code"`
-	ErrorMessage string      `json:"error_message"`
-	Data         interface{} `json:"data"`
+	ErrorCode       int         `json:"error_code"`
+	ErrorMessage    string      `json:"error_message"`
+	InternalMessage string      `json:"internal_message"`
+	Data            interface{} `json:"data"`
 }
 
 type ErrorResponseOptions struct {
-	HttpStatus   *int
-	ErrorMessage *string
-	Error        error
+	HttpStatus      *int
+	ErrorMessage    *string
+	InternalMessage *string
+	Error           error
 }
 
 func SuccessResponse(ctx context.Context, w http.ResponseWriter, status int, data any) {
@@ -49,30 +51,35 @@ func SuccessResponse(ctx context.Context, w http.ResponseWriter, status int, dat
 func ErrorResponse(ctx context.Context, w http.ResponseWriter, options ErrorResponseOptions) {
 	var err error
 	var httpStatus int
-	var errMessage string
+	var errorMessage string
+	var internalMessage string
 
 	if options.Error != nil {
-		httpStatus, err = customerrors.MapError(options.Error)
-		errMessage = err.Error()
-	}
-
-	if options.ErrorMessage != nil {
-		errMessage = *options.ErrorMessage
+		httpStatus, errorMessage, internalMessage = customerrors.MapError(options.Error)
 	}
 
 	if options.HttpStatus != nil {
 		httpStatus = *options.HttpStatus
 	}
 
+	if options.ErrorMessage != nil {
+		errorMessage = *options.ErrorMessage
+	}
+
+	if options.InternalMessage != nil {
+		internalMessage = *options.InternalMessage
+	}
+
 	// Displaying error
-	ctxlogger.Error(ctx, "error response: %s", errMessage)
+	ctxlogger.Error(ctx, "error response: %s", internalMessage)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)
 
 	payload := response{
-		ErrorCode:    httpStatus,
-		ErrorMessage: errMessage,
+		ErrorCode:       httpStatus,
+		ErrorMessage:    errorMessage,
+		InternalMessage: internalMessage,
 	}
 
 	out, err := json.Marshal(payload)
@@ -92,7 +99,7 @@ func ErrorResponse(ctx context.Context, w http.ResponseWriter, options ErrorResp
 
 func writeServerErrorResponse(ctx context.Context, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusInternalServerError)
-	_, err := w.Write([]byte(fmt.Sprintf("{\"message\":%s}", "internal server error")))
+	_, err := w.Write([]byte(fmt.Sprintf("{\"message\":%s}", "Something went wrong")))
 	if err != nil {
 		ctxlogger.Error(ctx, "error occurred while writing response")
 	}

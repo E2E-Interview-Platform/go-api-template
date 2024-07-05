@@ -2,10 +2,11 @@ package dto
 
 import (
 	"context"
+	"errors"
+	"net/http"
 	"regexp"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
-	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 )
 
@@ -25,15 +26,19 @@ type ListUsersRequest struct {
 
 func (req *ListUsersRequest) Validate(ctx context.Context) error {
 	if req.Page <= 0 {
-		err := customerrors.BadRequestError{Message: "page value should be greater than 0"}
-		ctxlogger.Error(ctx, "list user validate err: %s", err.Error())
-		return err
+		return customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Please provide value greater than 0",
+			InternalError: errors.New("list user validate err: page value should be greater than 0"),
+		}
 	}
 
 	if req.Limit <= 0 || req.Limit > 1000 {
-		err := customerrors.BadRequestError{Message: "limit should be between 1 and 1000"}
-		ctxlogger.Error(ctx, "list user validate err: %s", err.Error())
-		return err
+		return customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Limit should be between 1 and 1000",
+			InternalError: errors.New("list user validate err: limit should be between 1 and 1000"),
+		}
 	}
 
 	return nil
@@ -51,23 +56,29 @@ type CreateUserRequest struct {
 
 func (req *CreateUserRequest) Validate(ctx context.Context) error {
 	if req.Email == "" {
-		err := customerrors.BadRequestError{Message: "email is required"}
-		ctxlogger.Error(ctx, "create user validate err: %s", err.Error())
-		return err
+		return customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Please provide an email",
+			InternalError: errors.New("create user validate err: email is required"),
+		}
 	}
 
 	// check if email is in correct format
 	match, err := regexp.MatchString(constants.EMAIL_REGEX, req.Email)
 	if err != nil || !match {
-		err := customerrors.BadRequestError{Message: "invalid email"}
-		ctxlogger.Error(ctx, "create user validate err: %s", err.Error())
-		return err
+		return customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Please provide a valid email",
+			InternalError: errors.New("create user validate err: email is invalid"),
+		}
 	}
 
 	if req.Password == "" {
-		err := customerrors.BadRequestError{Message: "password required"}
-		ctxlogger.Error(ctx, "create user validate err: %s", err.Error())
-		return err
+		return customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Please provide a password",
+			InternalError: errors.New("create user validate err: password is required"),
+		}
 	}
 
 	return nil

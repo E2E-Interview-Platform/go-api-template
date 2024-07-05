@@ -1,12 +1,13 @@
 package middleware
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	"runtime/debug"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/context"
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
+	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 	"github.com/google/uuid"
 )
 
@@ -36,7 +37,13 @@ func Recoverer(next http.Handler) http.Handler {
 
 				ctxlogger.Info(ctx, "panic: %v, stack: %s", rvr, string(debug.Stack()))
 
-				ErrorResponse(ctx, w, ErrorResponseOptions{Error: errors.New("internal server error")})
+				ErrorResponse(ctx, w, ErrorResponseOptions{
+					Error: customerrors.Error{
+						Code:          http.StatusInternalServerError,
+						CustomMessage: "Something went wrong",
+						InternalError: fmt.Errorf("recovering panic: %s", rvr),
+					},
+				})
 			}
 		}()
 

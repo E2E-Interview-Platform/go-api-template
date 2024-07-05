@@ -1,6 +1,7 @@
 package environment
 
 import (
+	"fmt"
 	"os"
 
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
@@ -27,22 +28,34 @@ var (
 func SetupDatabaseEnvironment() error {
 	DB_USER = os.Getenv("DB_USER")
 	if DB_USER == "" {
-		return customerrors.CustomError{Message: "environment variable `DB_USER` not found"}
+		return customerrors.Error{
+			CustomMessage: "Please provide `DB_USER`",
+			InternalError: fmt.Errorf("environment variable `DB_USER` not found"),
+		}
 	}
 
 	DB_PASSWORD = os.Getenv("DB_PASSWORD")
 	if DB_PASSWORD == "" {
-		return customerrors.CustomError{Message: "environment variable `DB_PASSWORD` not found"}
+		return customerrors.Error{
+			CustomMessage: "Please provide `DB_PASSWORD`",
+			InternalError: fmt.Errorf("environment variable `DB_PASSWORD` not found"),
+		}
 	}
 
 	DB_URL = os.Getenv("DB_URL")
 	if DB_URL == "" {
-		return customerrors.CustomError{Message: "environment variable `DB_URL` not found"}
+		return customerrors.Error{
+			CustomMessage: "Please provide `DB_URL`",
+			InternalError: fmt.Errorf("environment variable `DB_URL` not found"),
+		}
 	}
 
 	DB_NAME = os.Getenv("DB_NAME")
 	if DB_NAME == "" {
-		return customerrors.CustomError{Message: "environment variable `DB_NAME` not found"}
+		return customerrors.Error{
+			CustomMessage: "Please provide `DB_NAME`",
+			InternalError: fmt.Errorf("environment variable `DB_NAME` not found"),
+		}
 	}
 
 	return nil

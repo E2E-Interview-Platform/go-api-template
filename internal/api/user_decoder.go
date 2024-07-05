@@ -21,14 +21,23 @@ func decodeListUsersRequest(ctx context.Context, r *http.Request) (dto.ListUsers
 
 	page, err := strconv.Atoi(query.Get("page"))
 	if err != nil {
-		ctxlogger.Error(ctx, "error getting page from URL, err: %s", err)
-		return dto.ListUsersRequest{}, customerrors.BadRequestError{Message: "page value not found"}
+		err = fmt.Errorf("error getting page from URL, err: %s", err)
+		ctxlogger.Error(ctx, err.Error())
+		return dto.ListUsersRequest{}, customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Please provide page value",
+			InternalError: err,
+		}
 	}
 
 	limit, err := strconv.Atoi(query.Get("limit"))
 	if err != nil {
 		ctxlogger.Error(ctx, "error getting limit from URL, err: %s", err)
-		return dto.ListUsersRequest{}, customerrors.BadRequestError{Message: "limit value not found"}
+		return dto.ListUsersRequest{}, customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Please provide limit value",
+			InternalError: err,
+		}
 	}
 
 	req := dto.ListUsersRequest{
@@ -46,7 +55,11 @@ func decodeRegisterUserRequest(ctx context.Context, r *http.Request) (dto.Create
 	if err != nil {
 		err = fmt.Errorf("error decoding register user request, err: %s", err)
 		ctxlogger.Error(ctx, err.Error())
-		return dto.CreateUserRequest{}, customerrors.BadRequestError{Message: "invalid request body"}
+		return dto.CreateUserRequest{}, customerrors.Error{
+			Code:          http.StatusBadRequest,
+			CustomMessage: "Please provide a valid request body",
+			InternalError: err,
+		}
 	}
 
 	// Removing white spaces

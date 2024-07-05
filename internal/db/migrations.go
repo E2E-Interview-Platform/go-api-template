@@ -151,7 +151,10 @@ func (migration Migration) CreateMigrationFile(ctx context.Context, filename str
 	var err error
 
 	if len(filename) == 0 {
-		return customerrors.CustomError{Message: "filename is not provided"}
+		return customerrors.Error{
+			CustomMessage: "filename is not provided",
+			InternalError: err,
+		}
 	}
 
 	timeStamp := time.Now().Unix()
