@@ -84,6 +84,9 @@ func handleMigration(migrationType string) {
 	ctx := context.Background()
 	ctx = customcontext.SetRequestID(ctx, "migration")
 
+	ctxlogger.Info(ctx, "Starting #handleMigration")
+	defer ctxlogger.Info(ctx, "Ending #handleMigration")
+
 	migrations := db.InitializeDBMigrations(ctx)
 	switch migrationType {
 	case db.RUN:

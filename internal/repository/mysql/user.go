@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
+	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/dto"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/helpers"
@@ -26,7 +27,10 @@ func NewUserRepo(db *sqlx.DB) repository.UserStorer {
 	}
 }
 
-func (userStore *userStore) ListUsersPaginated(ctx context.Context, tx repository.Transaction, filters dto.ListUsersRequest) (dto.PaginatedUsers, error) {
+func (userStore *userStore) ListUsersPaginated(ctx context.Context, tx repository.Transaction, filters dto.ListUsersPaginatedRequest) (dto.PaginatedUsers, error) {
+	ctxlogger.Info(ctx, "Starting list users paginated in repository")
+	defer ctxlogger.Info(ctx, "Ending list users paginated in repository")
+
 	queryExecutor := userStore.initiateQueryExecutor(tx)
 
 	// ----- Get the count
@@ -77,6 +81,9 @@ func (userStore *userStore) ListUsersPaginated(ctx context.Context, tx repositor
 }
 
 func (userStore *userStore) CreateUser(ctx context.Context, tx repository.Transaction, user repository.User) error {
+	ctxlogger.Info(ctx, "Starting create user in repository")
+	defer ctxlogger.Info(ctx, "Ending create user in repository")
+
 	queryExecutor := userStore.initiateQueryExecutor(tx)
 
 	query := `

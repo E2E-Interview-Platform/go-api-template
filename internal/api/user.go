@@ -12,7 +12,8 @@ import (
 func ListUsersPaginated(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctxlogger.Info(ctx, "List Users Handler")
+		ctxlogger.Info(ctx, "Starting List Users Handler")
+		defer ctxlogger.Info(ctx, "Ending List Users Handler")
 
 		req, err := decodeListUsersRequest(ctx, r)
 		if err != nil {
@@ -36,7 +37,7 @@ func ListUsersPaginated(userSvc user.Service) func(http.ResponseWriter, *http.Re
 		users := paginatedUsers.Users
 		pagination := paginatedUsers.Pagination
 
-		middleware.SuccessResponse(ctx, w, http.StatusOK, dto.ListUsersResponse{
+		middleware.SuccessResponse(ctx, w, http.StatusOK, dto.ListUsersPaginatedResponse{
 			Users:      users,
 			Pagination: pagination,
 		})
@@ -46,9 +47,10 @@ func ListUsersPaginated(userSvc user.Service) func(http.ResponseWriter, *http.Re
 func CreateUser(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		ctxlogger.Info(ctx, "Create User Handler")
+		ctxlogger.Info(ctx, "Starting Create User Handler")
+		defer ctxlogger.Info(ctx, "Ending Create User Handler")
 
-		req, err := decodeRegisterUserRequest(ctx, r)
+		req, err := decodeCreateUserRequest(ctx, r)
 		if err != nil {
 			middleware.ErrorResponse(ctx, w, middleware.ErrorResponseOptions{Error: err})
 			return
@@ -75,6 +77,10 @@ func CreateUser(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 
 func UserPanic() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		ctxlogger.Info(ctx, "Starting User Panic")
+		defer ctxlogger.Info(ctx, "Ending User Panic")
+
 		panic("Trying Panic")
 	}
 }

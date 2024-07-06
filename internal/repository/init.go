@@ -15,6 +15,9 @@ type Database struct {
 }
 
 func InitializeDatabase(ctx context.Context) (*Database, error) {
+	ctxlogger.Info(ctx, "Starting #InitializeDatabase")
+	defer ctxlogger.Info(ctx, "Ending #InitializeDatabase")
+
 	mysqlDBURL := fmt.Sprintf(
 		"%s:%s@(%s)/%s",
 		environment.DB_USER,

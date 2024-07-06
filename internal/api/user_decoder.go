@@ -13,7 +13,7 @@ import (
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/dto"
 )
 
-func decodeListUsersRequest(ctx context.Context, r *http.Request) (dto.ListUsersRequest, error) {
+func decodeListUsersRequest(ctx context.Context, r *http.Request) (dto.ListUsersPaginatedRequest, error) {
 	// Getting data from search query
 	query := r.URL.Query()
 
@@ -23,7 +23,7 @@ func decodeListUsersRequest(ctx context.Context, r *http.Request) (dto.ListUsers
 	if err != nil {
 		err = fmt.Errorf("error getting page from URL, err: %s", err)
 		ctxlogger.Error(ctx, err.Error())
-		return dto.ListUsersRequest{}, customerrors.Error{
+		return dto.ListUsersPaginatedRequest{}, customerrors.Error{
 			Code:          http.StatusBadRequest,
 			CustomMessage: "Please provide page value",
 			InternalError: err,
@@ -33,14 +33,14 @@ func decodeListUsersRequest(ctx context.Context, r *http.Request) (dto.ListUsers
 	limit, err := strconv.Atoi(query.Get("limit"))
 	if err != nil {
 		ctxlogger.Error(ctx, "error getting limit from URL, err: %s", err)
-		return dto.ListUsersRequest{}, customerrors.Error{
+		return dto.ListUsersPaginatedRequest{}, customerrors.Error{
 			Code:          http.StatusBadRequest,
 			CustomMessage: "Please provide limit value",
 			InternalError: err,
 		}
 	}
 
-	req := dto.ListUsersRequest{
+	req := dto.ListUsersPaginatedRequest{
 		SearchValue: strings.TrimSpace(search),
 		Page:        page,
 		Limit:       limit,
@@ -49,11 +49,11 @@ func decodeListUsersRequest(ctx context.Context, r *http.Request) (dto.ListUsers
 	return req, nil
 }
 
-func decodeRegisterUserRequest(ctx context.Context, r *http.Request) (dto.CreateUserRequest, error) {
+func decodeCreateUserRequest(ctx context.Context, r *http.Request) (dto.CreateUserRequest, error) {
 	var req dto.CreateUserRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		err = fmt.Errorf("error decoding register user request, err: %s", err)
+		err = fmt.Errorf("error decoding create user request, err: %s", err)
 		ctxlogger.Error(ctx, err.Error())
 		return dto.CreateUserRequest{}, customerrors.Error{
 			Code:          http.StatusBadRequest,

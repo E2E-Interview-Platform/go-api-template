@@ -13,6 +13,9 @@ import (
 )
 
 func (userSvc *service) CreateUserRequestToUserMapper(ctx context.Context, userDetail dto.CreateUserRequest) (repository.User, error) {
+	ctxlogger.Info(ctx, "Starting #CreateUserRequestToUserMapper")
+	defer ctxlogger.Info(ctx, "Ending #CreateUserRequestToUserMapper")
+
 	hashedPassword, err := helpers.Hash(userDetail.Password)
 	if err != nil {
 		ctxlogger.Error(ctx, "error hashing password in #CreateUserRequestToUserMapper")

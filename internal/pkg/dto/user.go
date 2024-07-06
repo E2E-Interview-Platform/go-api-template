@@ -23,13 +23,13 @@ type PaginatedUsers struct {
 }
 
 // List User
-type ListUsersRequest struct {
+type ListUsersPaginatedRequest struct {
 	Page        int    `json:"page"`
 	Limit       int    `json:"limit"`
 	SearchValue string `json:"search"`
 }
 
-func (req *ListUsersRequest) Validate(ctx context.Context) error {
+func (req *ListUsersPaginatedRequest) Validate(ctx context.Context) error {
 	if req.Page <= 0 {
 		return customerrors.Error{
 			Code:          http.StatusBadRequest,
@@ -49,7 +49,7 @@ func (req *ListUsersRequest) Validate(ctx context.Context) error {
 	return nil
 }
 
-type ListUsersResponse PaginatedUsers
+type ListUsersPaginatedResponse PaginatedUsers
 
 // Create User
 type CreateUserRequest struct {

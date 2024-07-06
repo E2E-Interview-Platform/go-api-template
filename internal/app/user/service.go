@@ -15,8 +15,8 @@ type service struct {
 }
 
 type Service interface {
+	ListUsersPaginated(ctx context.Context, filters dto.ListUsersPaginatedRequest) (dto.PaginatedUsers, error)
 	CreateUser(ctx context.Context, userDetail dto.CreateUserRequest) (string, error)
-	ListUsersPaginated(ctx context.Context, filters dto.ListUsersRequest) (dto.PaginatedUsers, error)
 }
 
 func NewService(userRepo repository.UserStorer) Service {
@@ -26,8 +26,22 @@ func NewService(userRepo repository.UserStorer) Service {
 	}
 }
 
+func (userSvc *service) ListUsersPaginated(ctx context.Context, filters dto.ListUsersPaginatedRequest) (dto.PaginatedUsers, error) {
+	ctxlogger.Info(ctx, "Starting list users paginated service")
+	defer ctxlogger.Info(ctx, "Ending list users paginated service")
+
+	paginatedUsers, err := userSvc.userRepo.ListUsersPaginated(ctx, nil, filters)
+	if err != nil {
+		ctxlogger.Error(ctx, "error listing users, err: %s", err.Error())
+		return dto.PaginatedUsers{}, nil
+	}
+
+	return paginatedUsers, nil
+}
+
 func (userSvc *service) CreateUser(ctx context.Context, userDetail dto.CreateUserRequest) (string, error) {
-	ctxlogger.Info(ctx, "Create User Service")
+	ctxlogger.Info(ctx, "Starting create user service")
+	defer ctxlogger.Info(ctx, "Ending create user service")
 
 	tx, err := userSvc.userRepo.BeginTx(ctx)
 	if err != nil {
@@ -72,16 +86,4 @@ func (userSvc *service) CreateUser(ctx context.Context, userDetail dto.CreateUse
 	}
 
 	return token, nil
-}
-
-func (userSvc *service) ListUsersPaginated(ctx context.Context, filters dto.ListUsersRequest) (dto.PaginatedUsers, error) {
-	ctxlogger.Info(ctx, "List Users Service")
-
-	paginatedUsers, err := userSvc.userRepo.ListUsersPaginated(ctx, nil, filters)
-	if err != nil {
-		ctxlogger.Error(ctx, "error listing users, err: %s", err.Error())
-		return dto.PaginatedUsers{}, nil
-	}
-
-	return paginatedUsers, nil
 }

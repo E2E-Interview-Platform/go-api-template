@@ -9,8 +9,8 @@ import (
 type UserStorer interface {
 	RepositoryTransaction
 
+	ListUsersPaginated(ctx context.Context, tx Transaction, filters dto.ListUsersPaginatedRequest) (dto.PaginatedUsers, error)
 	CreateUser(ctx context.Context, tx Transaction, user User) error
-	ListUsersPaginated(ctx context.Context, tx Transaction, filters dto.ListUsersRequest) (dto.PaginatedUsers, error)
 }
 
 type User struct {
