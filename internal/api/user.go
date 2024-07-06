@@ -9,7 +9,7 @@ import (
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/middleware"
 )
 
-func ListUsersPaginated(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
+func ListUsersPaginatedHandler(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctxlogger.Info(ctx, "Starting List Users Handler")
@@ -44,7 +44,7 @@ func ListUsersPaginated(userSvc user.Service) func(http.ResponseWriter, *http.Re
 	}
 }
 
-func CreateUser(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
+func CreateUserHandler(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctxlogger.Info(ctx, "Starting Create User Handler")
@@ -75,7 +75,7 @@ func CreateUser(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-func UserPanic() func(http.ResponseWriter, *http.Request) {
+func UserPanicHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctxlogger.Info(ctx, "Starting User Panic")
