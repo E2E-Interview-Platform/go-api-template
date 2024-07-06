@@ -8,15 +8,4 @@ responses:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            error_code:
-              type: integer
-              example: 500
-            error_message:
-              type: string
-              example: 'Internal Server Error'
-            data:
-              type: object
-              nullable: true
-              example: null
+          $ref: '../../../../index.yaml#/components/schemas/ErrorResponse'

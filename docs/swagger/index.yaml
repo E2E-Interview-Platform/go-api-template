@@ -17,3 +17,58 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT 
+  schemas:
+    UserDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1334b224-8dbe-45a7-b02a-03271cbb4105"
+        email:
+          type: string
+          example: "example@gmail.com"
+        created_at:
+          type: integer
+          example: 1720105013765
+        updated_at:
+          type: integer
+          example: 1720105013765
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: integer
+          nullable: true
+          example: 2
+        previous:
+          type: integer
+          nullable: true
+          example: null
+        record_per_page:
+          type: integer
+          example: 10
+        current_page:
+          type: integer
+          example: 1
+        total_page:
+          type: integer
+          example: 1
+        total_records:
+          type: integer
+          example: 4
+    ErrorResponse:
+      type: object
+      properties:
+        error_code:
+          type: integer
+          example: 500
+        error_message:
+          type: string
+          example: 'Error message for user'
+        internal_message:
+          type: string
+          example: 'Actual error message'
+        data:
+          type: object
+          nullable: true
+          example: null

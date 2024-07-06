@@ -1,10 +1,31 @@
 tags:
   - USER
-summary: 'Get all users'
-description: 'List all users of the application.'
+summary: 'Gets paginated users'
+description: 'Users are retried in a paginated fasion.'
+parameters:
+  - name: page
+    in: query
+    required: true
+    schema:
+      type: integer
+      default: 1
+    description: Page number of the results to return
+  - name: limit
+    in: query
+    required: true
+    schema:
+      type: integer
+      default: 10
+    description: Number of users to return
+  - name: search
+    in: query
+    required: false
+    schema:
+      type: string
+    description: Search term for filtering users
 responses:
   '200':
-    description: OK
+    description: A list of users
     content:
       application/json:
         schema:
@@ -15,12 +36,29 @@ responses:
               example: 0
             error_message:
               type: string
-              example: ''
+              example: ""
+            internal_message:
+              type: string
+              example: ""
             data:
               type: object
               properties:
-                name:
-                  type: string
-                  example: "user name"
+                users:
+                  type: array
+                  items:
+                    $ref: '../../../../index.yaml#/components/schemas/UserDetail'
+                pagination:
+                  type: object
+                  $ref: '../../../../index.yaml#/components/schemas/UserDetail'
+  '400':
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: '../../../../index.yaml#/components/schemas/ErrorResponse'
   '500':
     description: Internal Server Error
+    content:
+      application/json:
+        schema:
+          $ref: '../../../../index.yaml#/components/schemas/ErrorResponse'

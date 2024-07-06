@@ -2,6 +2,9 @@
   get:
     $ref: ./api/users/v1/users_get.yaml
 
+  post:
+    $ref: ./api/users/v1/users_post.yaml
+
 /api/v1/users/panic:
   get:
     $ref: ./api/users/v1/users_panic.yaml
