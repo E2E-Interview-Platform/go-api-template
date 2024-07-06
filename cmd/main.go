@@ -8,8 +8,8 @@ import (
 
 	"github.com/Suhaan-Bhandary/go-api-template/internal/api"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/app"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/cronjob"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/db"
-	"github.com/Suhaan-Bhandary/go-api-template/internal/job"
 	customcontext "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/context"
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/environment"
@@ -64,7 +64,7 @@ func main() {
 		return
 	}
 
-	job.InitializeJobs(scheduler)
+	cronjob.InitializeJobs(scheduler)
 	defer scheduler.Shutdown()
 
 	// Setting chi router and serving it
