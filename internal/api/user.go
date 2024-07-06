@@ -75,6 +75,33 @@ func CreateUserHandler(userSvc user.Service) func(http.ResponseWriter, *http.Req
 	}
 }
 
+func CreateUserJobHandler() func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		ctxlogger.Info(ctx, "Starting Create User Job Handler")
+		defer ctxlogger.Info(ctx, "Ending Create User Job Handler")
+
+		req, err := decodeCreateUserJobRequest(ctx, r)
+		if err != nil {
+			middleware.ErrorResponse(ctx, w, middleware.ErrorResponseOptions{Error: err})
+			return
+		}
+
+		err = req.Validate(ctx)
+		if err != nil {
+			middleware.ErrorResponse(ctx, w, middleware.ErrorResponseOptions{Error: err})
+			return
+		}
+
+		// Creating Job
+		ctxlogger.Info(ctx, "Creating Job for user %s", req.UserId)
+
+		middleware.SuccessResponse(ctx, w, http.StatusOK, dto.CreateUserJobResponse{
+			Message: "Job created successfully",
+		})
+	}
+}
+
 func UserPanicHandler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()

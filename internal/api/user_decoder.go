@@ -11,6 +11,7 @@ import (
 	ctxlogger "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/ctxLogger"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/dto"
+	"github.com/go-chi/chi/v5"
 )
 
 func decodeListUsersRequest(ctx context.Context, r *http.Request) (dto.ListUsersPaginatedRequest, error) {
@@ -64,6 +65,13 @@ func decodeCreateUserRequest(ctx context.Context, r *http.Request) (dto.CreateUs
 
 	// Removing white spaces
 	req.Email = strings.TrimSpace(req.Email)
+
+	return req, nil
+}
+
+func decodeCreateUserJobRequest(_ context.Context, r *http.Request) (dto.CreateUserJobRequest, error) {
+	var req dto.CreateUserJobRequest
+	req.UserId = chi.URLParam(r, "userId")
 
 	return req, nil
 }

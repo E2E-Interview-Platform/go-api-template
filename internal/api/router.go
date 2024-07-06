@@ -29,6 +29,7 @@ func userRouter(services app.Dependencies) http.Handler {
 
 	r.Get("/", ListUsersPaginatedHandler(services.UserService))
 	r.Post("/", CreateUserHandler(services.UserService))
+	r.Post("/{userId}/job", CreateUserJobHandler())
 	r.Get("/panic", UserPanicHandler())
 
 	return r
