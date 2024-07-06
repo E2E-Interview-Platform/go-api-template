@@ -9,7 +9,7 @@ import (
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/middleware"
 )
 
-func ListUsers(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
+func ListUsersPaginated(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctxlogger.Info(ctx, "List Users Handler")
@@ -26,14 +26,19 @@ func ListUsers(userSvc user.Service) func(http.ResponseWriter, *http.Request) {
 			return
 		}
 
-		users, err := userSvc.ListUsers(ctx, req)
+		paginatedUsers, err := userSvc.ListUsersPaginated(ctx, req)
 		if err != nil {
 			middleware.ErrorResponse(ctx, w, middleware.ErrorResponseOptions{Error: err})
 			return
 		}
 
+		// User and pagination data
+		users := paginatedUsers.Users
+		pagination := paginatedUsers.Pagination
+
 		middleware.SuccessResponse(ctx, w, http.StatusOK, dto.ListUsersResponse{
-			Users: users,
+			Users:      users,
+			Pagination: pagination,
 		})
 	}
 }

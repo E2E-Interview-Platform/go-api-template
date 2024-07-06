@@ -8,6 +8,7 @@ import (
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/constants"
 	customerrors "github.com/Suhaan-Bhandary/go-api-template/internal/pkg/customErrors"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/dto"
+	"github.com/Suhaan-Bhandary/go-api-template/internal/pkg/helpers"
 	"github.com/Suhaan-Bhandary/go-api-template/internal/repository"
 	"github.com/jmoiron/sqlx"
 
@@ -25,16 +26,33 @@ func NewUserRepo(db *sqlx.DB) repository.UserStorer {
 	}
 }
 
-func (userStore *userStore) ListUsers(ctx context.Context, tx repository.Transaction, filters dto.ListUsersRequest) ([]dto.User, error) {
+func (userStore *userStore) ListUsersPaginated(ctx context.Context, tx repository.Transaction, filters dto.ListUsersRequest) (dto.PaginatedUsers, error) {
 	queryExecutor := userStore.initiateQueryExecutor(tx)
 
-	queryBuilder := sq.
-		Select("id", "email", "created_at", "updated_at").
-		From("users")
+	// ----- Get the count
+	totalRecordsQueryBuilder := sq.Select("count(*) as count").From("users")
+
+	// Filtering
+	if filters.SearchValue != "" {
+		totalRecordsQueryBuilder = totalRecordsQueryBuilder.Where(sq.Like{"email": "%" + filters.SearchValue + "%"})
+	}
+
+	countQuery, countArgs, err := totalRecordsQueryBuilder.ToSql()
+	if err != nil {
+		return dto.PaginatedUsers{}, fmt.Errorf("failed to build SQL query: %w", err)
+	}
+
+	totalRecords := 0
+	err = queryExecutor.QueryRowx(countQuery, countArgs...).Scan(&totalRecords)
+	if err != nil {
+		return dto.PaginatedUsers{}, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	// ----- Get the paginated data
+	queryBuilder := sq.Select("id", "email", "created_at", "updated_at").From("users")
 
 	// Pagination
-	offset := (filters.Page - 1) * filters.Limit
-	queryBuilder = queryBuilder.Limit(uint64(filters.Limit)).Offset(uint64(offset))
+	queryBuilder = helpers.SetQueryBuilderOffsetAndLimit(queryBuilder, filters.Page, filters.Limit)
 
 	// Filtering
 	if filters.SearchValue != "" {
@@ -43,16 +61,19 @@ func (userStore *userStore) ListUsers(ctx context.Context, tx repository.Transac
 
 	query, args, err := queryBuilder.ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("failed to build SQL query: %w", err)
+		return dto.PaginatedUsers{}, fmt.Errorf("failed to build SQL query: %w", err)
 	}
 
-	var users []dto.User
+	users := make([]dto.User, 0)
 	err = sqlx.Select(queryExecutor, &users, query, args...)
 	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %w", err)
+		return dto.PaginatedUsers{}, fmt.Errorf("failed to execute query: %w", err)
 	}
 
-	return users, nil
+	return dto.PaginatedUsers{
+		Users:      users,
+		Pagination: helpers.GetPaginationMetaData(filters.Page, filters.Limit, totalRecords),
+	}, nil
 }
 
 func (userStore *userStore) CreateUser(ctx context.Context, tx repository.Transaction, user repository.User) error {

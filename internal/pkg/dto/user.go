@@ -17,6 +17,11 @@ type User struct {
 	UpdatedAt int64  `json:"updated_at" db:"updated_at"`
 }
 
+type PaginatedUsers struct {
+	Users      []User     `json:"users"`
+	Pagination Pagination `json:"pagination"`
+}
+
 // List User
 type ListUsersRequest struct {
 	Page        int    `json:"page"`
@@ -44,9 +49,7 @@ func (req *ListUsersRequest) Validate(ctx context.Context) error {
 	return nil
 }
 
-type ListUsersResponse struct {
-	Users []User `json:"users"`
-}
+type ListUsersResponse PaginatedUsers
 
 // Create User
 type CreateUserRequest struct {

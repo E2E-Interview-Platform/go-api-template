@@ -10,7 +10,7 @@ type UserStorer interface {
 	RepositoryTransaction
 
 	CreateUser(ctx context.Context, tx Transaction, user User) error
-	ListUsers(ctx context.Context, tx Transaction, filters dto.ListUsersRequest) ([]dto.User, error)
+	ListUsersPaginated(ctx context.Context, tx Transaction, filters dto.ListUsersRequest) (dto.PaginatedUsers, error)
 }
 
 type User struct {
